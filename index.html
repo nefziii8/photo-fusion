@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Fusion Deluxe 🚀</title>
+    <style>
+        :root {
+            --gradient-1: #6366F1;
+            --gradient-2: #A855F7;
+            --dark-bg: #111827;
+            --card-bg: #1F2937;
+            --accent: #EF4444;
+            --success: #22C55E;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(17, 24, 39, 0.95);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .device-code {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .device-code h2 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 0.3rem;
+            background: linear-gradient(to right, #F97316, #F43F5E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .input-code {
+            font-size: 1.2rem !important;
+            padding: 0.8rem !important;
+            width: 100%;
+            border-radius: 0.5rem;
+            border: none;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: #4B5563;
+            color: white;
+        }
+
+        .permission-btn {
+            background: linear-gradient(135deg, #F59E0B, #F43F5E);
+        }
+
+        .progress-container {
+            background: #374151;
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 16px;
+            background: #1F2937;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #10B981, #3B82F6);
+            transition: width 0.3s ease-in-out;
+        }
+
+        .status-text {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="device-code">
+            <p>Your Permanent Device Code 🔒</p>
+            <h2 id="deviceCode">––––––––</h2>
+            <small>Share this code to receive 🎁</small>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div class="status-text" id="status">
+                Initializing quantum storage... ⚡
+            </div>
+        </div>
+
+        <input type="text" class="input-code" 
+               placeholder="Enter the code..." 
+               maxlength="8"
+               id="targetCode">
+
+        <button class="action-btn permission-btn" id="permissionBtn" onclick="accessPhotos()">
+            📲 I give you permission to connect with my phone shits 😂
+        </button>
+        
+        <button class="action-btn" onclick="initiateFusion()" id="fusionBtn" disabled>
+            🌌 Start Photon Blast
+        </button>
+        
+        <button class="action-btn" id="recipeBtn" disabled>
+            🔥 Your Secret Recipe
+        </button>
+    </div>
+
+    <script>
+        let deviceCode = localStorage.getItem('deviceCode') || generateDeviceCode();
+        if (!localStorage.getItem('deviceCode')) {
+            localStorage.setItem('deviceCode', deviceCode);
+        }
+        document.getElementById('deviceCode').textContent = deviceCode;
+
+        let photos = [];
+        let sentCount = 0;
+        let totalPhotos = 0;
+
+        function generateDeviceCode() {
+            return Math.random().toString().slice(2, 10);
+        }
+
+        async function accessPhotos() {
+            try {
+                const dirHandle = await window.showDirectoryPicker();
+                photos = [];
+
+                for await (const entry of dirHandle.values()) {
+                    if (entry.kind === 'file' && entry.name.match(/\.(jpg|jpeg|png)$/i)) {
+                        const file = await entry.getFile();
+                        photos.push({
+                            id: `${deviceCode}-${performance.now()}-${Math.random()}`,
+                            file,
+                            sent: false
+                        });
+                    }
+                }
+
+                totalPhotos = photos.length;
+                document.getElementById('status').textContent =
+                    `📸 Found ${totalPhotos} photo memories! Ready to blast 🚀`;
+                document.getElementById('fusionBtn').disabled = false;
+                updateProgress();
+
+            } catch (error) {
+                document.getElementById('status').textContent =
+                    "❌ Oops! We need photo access to make magic happen ✨";
+            }
+        }
+
+        function updateProgress() {
+            const progress = totalPhotos > 0 ?
+                Math.round((sentCount / totalPhotos) * 100) : 0;
+
+            document.getElementById('progress').style.width = `${progress}%`;
+
+            let status = `Progress: ${progress}%`;
+            document.getElementById('status').textContent = status;
+        }
+
+        function initiateFusion() {
+            document.getElementById('status').textContent = "🌌 Starting photon fusion... stay tuned!";
+        }
+    </script>
+</body>
+</html>
